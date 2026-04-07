@@ -19,65 +19,12 @@
                     BorderThickness="0"
                     SelectionChanged="NavView_SelectionChanged">
         <NavigationView.Resources>
-            <Style x:Key="PageTitleStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="28" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Margin" Value="0,0,0,0" />
-                <Setter Property="Foreground" Value="{ThemeResource TextFillColorPrimaryBrush}" />
-            </Style>
-
-            <Style x:Key="PageSubtitleStyle" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
-                <Setter Property="TextWrapping" Value="Wrap" />
-            </Style>
-
-            <Style x:Key="CardLabelStyle" TargetType="TextBlock">
-                <Setter Property="Foreground" Value="{ThemeResource TextFillColorTertiaryBrush}" />
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-
-            <Style x:Key="CardValueStyle" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-            </Style>
-
-            <Style x:Key="MetricCardStyle" TargetType="Border">
-                <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
-                <Setter Property="CornerRadius" Value="16" />
-                <Setter Property="Padding" Value="14,12" />
-                <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Style>
-
-            <Style x:Key="SectionCardStyle" TargetType="Border">
-                <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
-                <Setter Property="CornerRadius" Value="18" />
-                <Setter Property="Padding" Value="16" />
-                <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
-                <Setter Property="BorderThickness" Value="1" />
-            </Style>
-
-            <Style x:Key="HeaderCommandButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="CornerRadius" Value="8" />
-                <Setter Property="Padding" Value="8,6" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="HorizontalContentAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Stretch" />
-                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-
-            <Style x:Key="ProcessListItemStyle" TargetType="ListViewItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="0,0,0,4" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="CornerRadius" Value="8" />
-                <Setter Property="Background" Value="Transparent" />
-            </Style>
+            <ResourceDictionary>
+                <ResourceDictionary.MergedDictionaries>
+                    <ResourceDictionary Source="ms-appx:///Styles/MainWindow.TypographyAndCards.xaml" />
+                    <ResourceDictionary Source="ms-appx:///Styles/MainWindow.Controls.xaml" />
+                </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary>
         </NavigationView.Resources>
 
         <NavigationView.MenuItems>
@@ -94,6 +41,16 @@
             <NavigationViewItem Content="GPU" Tag="GPU">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xE91B;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem Content="Details" Tag="Details">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE9D2;" />
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+            <NavigationViewItem Content="Settings" Tag="Settings">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xE713;" />
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
         </NavigationView.MenuItems>
@@ -130,6 +87,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <Border Grid.Column="0" Style="{StaticResource MetricCardStyle}">
@@ -144,6 +102,7 @@
                                 <StackPanel Grid.Column="1" Spacing="2">
                                     <TextBlock Text="System" Style="{StaticResource CardLabelStyle}" />
                                     <TextBlock Text="{x:Bind SystemCpuText, Mode=OneWay}" Style="{StaticResource CardValueStyle}" />
+                                    <TextBlock Text="{x:Bind CpuTemperatureText, Mode=OneWay}" Style="{StaticResource CardLabelStyle}" />
                                 </StackPanel>
                             </Grid>
                         </Border>
@@ -160,6 +119,7 @@
                                 <StackPanel Grid.Column="1" Spacing="2">
                                     <TextBlock Text="Memory" Style="{StaticResource CardLabelStyle}" />
                                     <TextBlock Text="{x:Bind MemoryUsageText, Mode=OneWay}" Style="{StaticResource CardValueStyle}" />
+                                    <TextBlock Text="{x:Bind RamFrequencyText, Mode=OneWay}" Style="{StaticResource CardLabelStyle}" />
                                 </StackPanel>
                             </Grid>
                         </Border>
@@ -186,6 +146,24 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
+                                <Border Width="36" Height="36" CornerRadius="10" Background="{ThemeResource SystemFillColorAttentionBrush}">
+                                    <FontIcon Glyph="&#xEDA2;" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="Disk" Style="{StaticResource CardLabelStyle}" />
+                                    <TextBlock Text="{x:Bind DiskActivitySummary, Mode=OneWay}" Style="{StaticResource CardValueStyle}" />
+                                    <TextBlock Text="{x:Bind DiskReadWriteText, Mode=OneWay}" Style="{StaticResource CardLabelStyle}" />
+                                    <TextBlock Text="{x:Bind DiskNamesText, Mode=OneWay}" Style="{StaticResource CardLabelStyle}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Column="4" Style="{StaticResource MetricCardStyle}">
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
                                 <Border Width="36" Height="36" CornerRadius="10" Background="{ThemeResource SystemFillColorCriticalBrush}">
                                     <FontIcon Glyph="&#xEEA1;" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
                                 </Border>
@@ -198,12 +176,6 @@
                     </Grid>
 
                     <Border Grid.Row="2" Style="{StaticResource SectionCardStyle}">
-                    <Grid ColumnSpacing="10" RowSpacing="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
                         <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="1"
@@ -237,20 +209,6 @@
                                 </TextBox>
                             </Grid>
                         </Border>
-
-                        <Button Grid.Column="1"
-                                Click="ClearSearch_Click"
-                                ToolTipService.ToolTip="Clear search"
-                                Padding="10"
-                                MinWidth="40"
-                                Height="42"
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                BorderThickness="1"
-                                CornerRadius="12">
-                            <FontIcon Glyph="&#xE711;" />
-                        </Button>
-                    </Grid>
                     </Border>
 
                     <Grid Grid.Row="3" RowSpacing="10">
@@ -416,7 +374,7 @@
                                             <RowDefinition Height="*" />
                                         </Grid.RowDefinitions>
                                         <TextBlock Text="{x:Bind Title}" FontWeight="SemiBold" Margin="0,0,0,10" FontSize="14" />
-                                        <lvc:CartesianChart Grid.Row="1" Series="{x:Bind Series}" XAxes="{x:Bind XAxes}" YAxes="{x:Bind YAxes}" />
+                                        <lvc:CartesianChart Grid.Row="1" Series="{x:Bind Series}" XAxes="{x:Bind XAxes}" YAxes="{x:Bind YAxes}" LegendPosition="Top" />
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -438,6 +396,8 @@
                     <StackPanel Spacing="6">
                         <TextBlock Text="GPU Processes" Style="{StaticResource PageTitleStyle}" />
                         <TextBlock Text="Dedicated and integrated GPU engine activity." Style="{StaticResource PageSubtitleStyle}" />
+                        <TextBlock Text="Fetching some GPU may require Administrator mode."
+                                   Style="{StaticResource PageSubtitleStyle}" />
                     </StackPanel>
                 </Border>
 
@@ -527,6 +487,447 @@
                     </Grid>
                 </Border>
             </Grid>
+
+            <ScrollViewer x:Name="DetailsView" Visibility="Collapsed"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Padding="20,16,20,16" Spacing="14">
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="18">
+                        <Grid ColumnSpacing="14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="44" Height="44" CornerRadius="12" Background="{ThemeResource AccentFillColorSecondaryBrush}" VerticalAlignment="Top">
+                                <FontIcon Glyph="&#xE9D2;" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" Spacing="6">
+                                <TextBlock Text="CPU Core Details" Style="{StaticResource PageTitleStyle}" />
+                                <TextBlock Text="Per-core usage and frequency in real time."
+                                           Style="{StaticResource PageSubtitleStyle}" />
+                                <TextBlock Text="{x:Bind ProcessorNameText, Mode=OneWay}"
+                                           Style="{StaticResource PageSubtitleStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{x:Bind ProcessorTopologyText, Mode=OneWay}"
+                                           Style="{StaticResource PageSubtitleStyle}"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{x:Bind ProcessorCacheText, Mode=OneWay}"
+                                           Style="{StaticResource PageSubtitleStyle}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="18">
+                        <StackPanel Spacing="12">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource DetailHeaderIconBadgeStyle}">
+                                    <FontIcon Glyph="&#xE9D9;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                </Border>
+                                <StackPanel Grid.Column="1" Spacing="2">
+                                    <TextBlock Text="System Metrics" Style="{StaticResource DetailSectionTitleStyle}" />
+                                    <TextBlock Text="Live counters for CPU-side system activity." Style="{StaticResource PageSubtitleStyle}" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid ColumnSpacing="10" RowSpacing="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE81E;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="Temperature" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="Temperature" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind CpuTemperatureText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xEA86;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="Context Switches" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="ContextSwitches" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind ContextSwitchesText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE7E8;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="Interrupts" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="Interrupts" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind InterruptsText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE9CE;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="System Calls" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="SystemCalls" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind SyscallsText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE823;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="CPU Queue" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="CpuQueue" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind CpuQueueText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE9D9;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="CPU Time Breakdown" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="CpuTimeBreakdown" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind CpuTimeBreakdownText, Mode=OneWay}" FontSize="13" TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE82E;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="Idle Time" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="IdleTime" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind CpuIdleTimeText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource DetailMetricTileStyle}">
+                                    <Grid ColumnSpacing="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Border Style="{StaticResource DetailHeaderIconBadgeStyle}" Width="32" Height="32" CornerRadius="9">
+                                            <FontIcon Glyph="&#xE7FC;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <TextBlock Text="CPU Parking" Style="{StaticResource DetailMetricLabelStyle}" />
+                                                <Button Width="20" Height="20" Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Tag="CpuParking" Click="ShowMetricTeachingTip">
+                                                    <FontIcon Glyph="&#xE946;" FontSize="12" />
+                                                </Button>
+                                            </StackPanel>
+                                            <TextBlock Text="{x:Bind CpuParkingText, Mode=OneWay}" Style="{StaticResource DetailMetricValueStyle}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                            <TeachingTip x:Name="DetailsMetricTeachingTip"
+                                         IsLightDismissEnabled="True"
+                                         PreferredPlacement="Bottom" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="14">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnSpacing="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource DetailHeaderIconBadgeStyle}">
+                                    <FontIcon Glyph="&#xE950;" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" />
+                                </Border>
+                                <TextBlock Grid.Column="1" Text="CPU Cores" Style="{StaticResource DetailSectionTitleStyle}" VerticalAlignment="Center" />
+                            </Grid>
+                        <ListView x:Name="CpuCoreListView"
+                                  Loaded="CpuCoreListView_Loaded"
+                                  SizeChanged="CpuCoreListView_SizeChanged"
+                                  ItemsSource="{x:Bind CpuCoreMetrics, Mode=OneWay}"
+                                  SelectionMode="None"
+                                  IsItemClickEnabled="False"
+                                  Background="Transparent"
+                                  Padding="3,0"
+                                  BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollMode="Disabled"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid Orientation="Horizontal" ItemWidth="270" ItemHeight="124" HorizontalAlignment="Center" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:CpuCoreMetricViewModel">
+                                    <Border Style="{StaticResource DetailTileStyle}">
+                                        <Grid RowSpacing="6">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{x:Bind CoreLabel, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" />
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" HorizontalAlignment="Right">
+                                                    <TextBlock Text="Frequency:" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                                    <TextBlock Text="{x:Bind FrequencyText, Mode=OneWay}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <StackPanel Grid.Row="1" Spacing="2">
+                                                <TextBlock Text="Logical processor" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                                <TextBlock Text="{x:Bind CoreName, Mode=OneWay}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="WrapWholeWords" MaxLines="2" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="4">
+                                                <TextBlock Text="Usage:" FontSize="11" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                                <TextBlock Text="{x:Bind UsageText, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="3" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="18">
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="44" Height="44" CornerRadius="12" Background="{ThemeResource AccentFillColorSecondaryBrush}" VerticalAlignment="Top">
+                                <FontIcon Glyph="&#xEDA2;" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <StackPanel Grid.Column="1" Spacing="4">
+                                <TextBlock Text="Storage Disks" Style="{StaticResource DetailSectionTitleStyle}" />
+                                <TextBlock Text="Local drive capacity and activity." Style="{StaticResource PageSubtitleStyle}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="14">
+                        <ListView ItemsSource="{x:Bind DisksList, Mode=OneWay}"
+                                  SelectionMode="None"
+                                  IsItemClickEnabled="False"
+                                  Background="Transparent"
+                                  Padding="3,0"
+                                  BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollMode="Disabled"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ItemsWrapGrid Orientation="Horizontal" ItemWidth="320" ItemHeight="132" HorizontalAlignment="Left" />
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:DiskViewModel">
+                                    <Border Style="{StaticResource DetailTileStyle}">
+                                        <Grid RowSpacing="4">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{x:Bind Name}" FontSize="12" FontWeight="SemiBold" />
+                                                <TextBlock Grid.Column="1" Text="{x:Bind DiskType}" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                            </Grid>
+                                            <TextBlock Grid.Row="1" Text="{x:Bind Model}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Grid.Row="2" Text="{x:Bind CapacityText, Mode=OneWay}" FontSize="12" />
+                                            <TextBlock Grid.Row="3" Text="{x:Bind ActivityText, Mode=OneWay}" FontSize="12" Foreground="{ThemeResource TextFillColorTertiaryBrush}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Margin" Value="3" />
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer x:Name="SettingsView" Visibility="Collapsed"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Padding="20,16,20,16" Spacing="14">
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="18">
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Appearance Settings" Style="{StaticResource PageTitleStyle}" />
+                            <TextBlock Text="Customize system backdrop material and acrylic parameters."
+                                       Style="{StaticResource PageSubtitleStyle}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource SectionCardStyle}" Padding="18">
+                        <StackPanel Spacing="14">
+                            <StackPanel Spacing="6">
+                                <TextBlock Text="Backdrop material" Style="{StaticResource DetailMetricLabelStyle}" />
+                                <ComboBox x:Name="BackdropModeCombo"
+                                          SelectionChanged="BackdropModeCombo_SelectionChanged"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="Acrylic" Tag="Acrylic" />
+                                    <ComboBoxItem Content="Mica" Tag="Mica" />
+                                    <ComboBoxItem Content="Mica Alt" Tag="MicaAlt" />
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel x:Name="AcrylicSettingsPanel" Spacing="12">
+                                <ToggleSwitch x:Name="AcrylicThinToggle"
+                                              Header="Use thin acrylic"
+                                              IsOn="True"
+                                              Toggled="AcrylicThinToggle_Toggled" />
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock x:Name="TintOpacityLabel" Text="Tint opacity: 0.74" Style="{StaticResource DetailMetricLabelStyle}" />
+                                    <Slider x:Name="TintOpacitySlider"
+                                            Minimum="0.30"
+                                            Maximum="1.00"
+                                            StepFrequency="0.01"
+                                            Value="0.74"
+                                            ValueChanged="TintOpacitySlider_ValueChanged" />
+                                </StackPanel>
+
+                                <StackPanel Spacing="4">
+                                    <TextBlock x:Name="LuminosityOpacityLabel" Text="Luminosity opacity: 0.84" Style="{StaticResource DetailMetricLabelStyle}" />
+                                    <Slider x:Name="LuminosityOpacitySlider"
+                                            Minimum="0.30"
+                                            Maximum="1.00"
+                                            StepFrequency="0.01"
+                                            Value="0.84"
+                                            ValueChanged="LuminosityOpacitySlider_ValueChanged" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
         </Grid>
     </NavigationView>
 </Window>

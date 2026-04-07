@@ -14,6 +14,8 @@ namespace TaskManagerUI.Charts
         public double? GpuMemoryUsed { get; set; }
         public double? GpuTemperature { get; set; }
         public int TotalProcesses { get; set; }
+        public double TotalDiskReadBytesPerSec { get; set; }
+        public double TotalDiskWriteBytesPerSec { get; set; }
     }
 
     internal class Databse
@@ -34,7 +36,9 @@ namespace TaskManagerUI.Charts
                     GpuUtilization REAL,
                     GpuMemoryUsed REAL,
                     GpuTemperature REAL,
-                    TotalProcesses INTEGER NOT NULL
+                    TotalProcesses INTEGER NOT NULL,
+                    TotalDiskReadBytesPerSec REAL DEFAULT 0,
+                    TotalDiskWriteBytesPerSec REAL DEFAULT 0
                 );
 
                 CREATE TABLE IF NOT EXISTS ProcessPerformanceData (
@@ -51,7 +55,7 @@ namespace TaskManagerUI.Charts
             command.ExecuteNonQuery();
         }
 
-        public static void SaveData(string filePath, double targetCpu, double totalMem, double availMem, Monitoring.ProcessCollector.GPUData? gpu, IEnumerable<Monitoring.ProcessCollector.ProcessSnapshot> processes)
+        public static void SaveData(string filePath, double targetCpu, double totalMem, double availMem, Monitoring.ProcessCollector.GPUData? gpu, IEnumerable<Monitoring.ProcessCollector.ProcessSnapshot> processes, double totalDiskRead, double totalDiskWrite)
         {
             using var connection = new SqliteConnection($"Data Source={filePath}");
             connection.Open();
@@ -59,8 +63,8 @@ namespace TaskManagerUI.Charts
 
             var sysCommand = connection.CreateCommand();
             sysCommand.CommandText = @"
-                INSERT INTO SystemPerformanceData (TotalCpuUsage, TotalMemory, AvailableMemory, GpuUtilization, GpuMemoryUsed, GpuTemperature, TotalProcesses)
-                VALUES ($Cpu, $TotalMem, $AvailMem, $GpuUtil, $GpuMem, $GpuTemp, $TotalProc);
+                INSERT INTO SystemPerformanceData (TotalCpuUsage, TotalMemory, AvailableMemory, GpuUtilization, GpuMemoryUsed, GpuTemperature, TotalProcesses, TotalDiskReadBytesPerSec, TotalDiskWriteBytesPerSec)
+                VALUES ($Cpu, $TotalMem, $AvailMem, $GpuUtil, $GpuMem, $GpuTemp, $TotalProc, $DiskRead, $DiskWrite);
             ";
             sysCommand.Parameters.AddWithValue("$Cpu", targetCpu);
             sysCommand.Parameters.AddWithValue("$TotalMem", totalMem);
@@ -68,6 +72,8 @@ namespace TaskManagerUI.Charts
             sysCommand.Parameters.AddWithValue("$GpuUtil", gpu?.UtilizationGPU ?? (object)DBNull.Value);
             sysCommand.Parameters.AddWithValue("$GpuMem", gpu?.MemoryUsedMB ?? (object)DBNull.Value);
             sysCommand.Parameters.AddWithValue("$GpuTemp", gpu?.TemperatureC ?? (object)DBNull.Value);
+            sysCommand.Parameters.AddWithValue("$DiskRead", totalDiskRead);
+            sysCommand.Parameters.AddWithValue("$DiskWrite", totalDiskWrite);
 
             int totalProcs = 0;
             var processCommand = connection.CreateCommand();
@@ -108,7 +114,7 @@ namespace TaskManagerUI.Charts
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = $@"
-                SELECT Timestamp, TotalCpuUsage, TotalMemory, AvailableMemory, GpuUtilization, GpuMemoryUsed, GpuTemperature, TotalProcesses
+                SELECT Timestamp, TotalCpuUsage, TotalMemory, AvailableMemory, GpuUtilization, GpuMemoryUsed, GpuTemperature, TotalProcesses, TotalDiskReadBytesPerSec, TotalDiskWriteBytesPerSec
                 FROM SystemPerformanceData
                 ORDER BY Id DESC
                 LIMIT {limit}
@@ -125,7 +131,9 @@ namespace TaskManagerUI.Charts
                     GpuUtilization = reader.IsDBNull(4) ? null : reader.GetDouble(4),
                     GpuMemoryUsed = reader.IsDBNull(5) ? null : reader.GetDouble(5),
                     GpuTemperature = reader.IsDBNull(6) ? null : reader.GetDouble(6),
-                    TotalProcesses = reader.GetInt32(7)
+                    TotalProcesses = reader.GetInt32(7),
+                    TotalDiskReadBytesPerSec = reader.IsDBNull(8) ? 0 : reader.GetDouble(8),
+                    TotalDiskWriteBytesPerSec = reader.IsDBNull(9) ? 0 : reader.GetDouble(9)
                 });
             }
             result.Reverse();

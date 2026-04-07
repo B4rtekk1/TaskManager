@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TaskManagerUI (Package)": {
-      "commandName": "MsixPackage"
+      "commandName": "MsixPackage",
+      "nativeDebugging": false
     },
     "TaskManagerUI (Unpackaged)": {
       "commandName": "Project"

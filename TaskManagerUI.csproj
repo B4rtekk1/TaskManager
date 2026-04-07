@@ -1,44 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>TaskManagerUI</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
-		<Platforms>x86;x64;ARM64</Platforms>
-		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-		<PublishProfile>win-$(Platform).pubxml</PublishProfile>
+
+		<Platforms>x64</Platforms>
+		<RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+
 		<UseWinUI>true</UseWinUI>
-		<EnableMsixTooling>false</EnableMsixTooling>
-		<Nullable>enable</Nullable>
+
+		<!-- MSIX Packaging -->
+		<WindowsPackageType>MSIX</WindowsPackageType>
+		<EnableMsixTooling>true</EnableMsixTooling>
+
+		<!-- Self-contained -->
 		<SelfContained>true</SelfContained>
 		<WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+		<WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
+
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<!-- Packaging settings -->
+		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+		<PackageCertificateKeyFile>TaskManagerUI_TemporaryKey.pfx</PackageCertificateKeyFile>
+		<PackageCertificatePassword>TaskManager</PackageCertificatePassword>				
+		<AppxPackageDir>AppPackages\</AppxPackageDir>
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
 	</PropertyGroup>
+
 	<ItemGroup>
-		<Content Include="Assets\SplashScreen.scale-200.png" />
-		<Content Include="Assets\LockScreenLogo.scale-200.png" />
-		<Content Include="Assets\Square150x150Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.scale-200.png" />
-		<Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-		<Content Include="Assets\StoreLogo.png" />
-		<Content Include="Assets\Wide310x150Logo.scale-200.png" />
+		<Content Include="Assets\**" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
+
 	<ItemGroup>
+		<PackageReference Include="LiveChartsCore.SkiaSharpView" Version="2.0.0-rc4.5" />
 		<PackageReference Include="LiveChartsCore.SkiaSharpView.WinUI" Version="2.0.0-rc4.5" />
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.5" />
 		<PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.2.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.1721" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260317003" />
+		<PackageReference Include="System.Management" Version="10.0.5" />
 		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="10.0.5" />
 	</ItemGroup>
-	<!-- Publish Properties -->
-	<PropertyGroup>
-		<PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
-		<PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
-		<PublishTrimmed>False</PublishTrimmed>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	</PropertyGroup>
+
 </Project>
